@@ -40,15 +40,17 @@ function shallowCopy(obj) {
  *    mergeObjects([]) => {}
  */
 function mergeObjects(objects) {
-  let res;
-  for (let i = 0; i < objects.length; i += 1) {
-    if (typeof objects[i] === 'object') {
-      res = Object.assign(res, objects[i]);
-    } else {
-      res = {};
-    }
-  }
-
+  const res = {};
+  objects.forEach((obj) => {
+    const props = Object.entries(obj);
+    props.forEach(([key, value]) => {
+      if (!Object.prototype.hasOwnProperty.call(res, key)) {
+        res[key] = value;
+      } else {
+        res[key] += value;
+      }
+    });
+  });
   return res;
 }
 
@@ -133,7 +135,16 @@ function makeImmutable(obj) {
  *    makeWord({ a: [0, 1], b: [2, 3], c: [4, 5] }) => 'aabbcc'
  *    makeWord({ H:[0], e: [1], l: [2, 3, 8], o: [4, 6], W:[5], r:[7], d:[9]}) => 'HelloWorld'
  */
-function makeWord(/* lettersObject */) {}
+function makeWord(lettersObject) {
+  const letterArray = [];
+  const keys = Object.entries(lettersObject);
+  keys.forEach(([key, value]) => {
+    value.forEach((position) => {
+      letterArray[position] = key;
+    });
+  });
+  return letterArray.join('');
+}
 
 /**
  * There is a queue for tickets to a popular movie.
@@ -234,7 +245,27 @@ function fromJSON(proto, json) {
  *      { country: 'Russia',  city: 'Saint Petersburg' }
  *    ]
  */
-function sortCitiesArray(/* arr */) {}
+function sortCitiesArray(arr) {
+  return arr.sort((a, b) => {
+    if (a.country > b.country) {
+      return 1;
+    }
+    if (a.country < b.country) {
+      return -1;
+    }
+
+    if (a.country === b.country) {
+      if (a.city > b.city) {
+        return 1;
+      }
+      if (a.city < b.city) {
+        return -1;
+      }
+    }
+
+    return 0;
+  });
+}
 
 /**
  * Groups elements of the specified array by key.
